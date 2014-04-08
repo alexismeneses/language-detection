@@ -17,18 +17,20 @@ import net.arnx.jsonic.JSON;
 import net.arnx.jsonic.JSONException;
 
 /**
- * 
+ *
  * LangDetect Command Line Interface
  * <p>
  * This is a command line interface of Language Detection Library "LandDetect".
- * 
- * 
+ *
+ *
  * @author Nakatani Shuyo
  *
  */
 public class Command {
     /** smoothing default parameter (ELE) */
     private static final double DEFAULT_ALPHA = 0.5;
+
+    private DetectorFactory detectorFactory = DetectorFactory.newInstance();
 
     /** for Command line easy parser */
     private HashMap<String, String> opt_with_value = new HashMap<String, String>();
@@ -82,7 +84,7 @@ public class Command {
         return opt_without_value.contains(opt);
     }
 
-        
+
     /**
      * File search (easy glob)
      * @param directory directory path
@@ -102,25 +104,25 @@ public class Command {
      * @return false if load success
      */
     private boolean loadProfile() {
-        String profileDirectory = get("directory") + "/"; 
+        String profileDirectory = get("directory") + "/";
         try {
-            DetectorFactory.loadProfile(profileDirectory);
+            detectorFactory.loadProfile(profileDirectory);
             Long seed = getLong("seed");
-            if (seed != null) DetectorFactory.setSeed(seed);
+            if (seed != null) detectorFactory.setSeed(seed);
             return false;
         } catch (LangDetectException e) {
             System.err.println("ERROR: " + e.getMessage());
             return true;
         }
     }
-    
+
     /**
      * Generate Language Profile from Wikipedia Abstract Database File
-     * 
+     *
      * <pre>
      * usage: --genprofile -d [abstracts directory] [language names]
      * </pre>
-     * 
+     *
      */
     public void generateProfile() {
         File directory = new File(get("directory"));
@@ -150,16 +152,16 @@ public class Command {
                     if (os!=null) os.close();
                 } catch (IOException e) {}
             }
-        }        
+        }
     }
 
     /**
      * Generate Language Profile from Text File
-     * 
+     *
      * <pre>
      * usage: --genprofile-text -l [language code] [text file path]
      * </pre>
-     * 
+     *
      */
     private void generateProfileFromText() {
         if (arglist.size() != 1) {
@@ -201,11 +203,11 @@ public class Command {
 
     /**
      * Language detection test for each file (--detectlang option)
-     * 
+     *
      * <pre>
      * usage: --detectlang -d [profile directory] -a [alpha] -s [seed] [test file(s)]
      * </pre>
-     * 
+     *
      */
     public void detectLang() {
         if (loadProfile()) return;
@@ -214,7 +216,7 @@ public class Command {
             try {
                 is = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "utf-8"));
 
-                Detector detector = DetectorFactory.create(getDouble("alpha", DEFAULT_ALPHA));
+                Detector detector = detectorFactory.create(getDouble("alpha", DEFAULT_ALPHA));
                 if (hasOpt("--debug")) detector.setVerbose();
                 detector.append(is);
                 System.out.println(filename + ":" + detector.getProbabilities());
@@ -233,16 +235,16 @@ public class Command {
 
     /**
      * Batch Test of Language Detection (--batchtest option)
-     * 
+     *
      * <pre>
      * usage: --batchtest -d [profile directory] -a [alpha] -s [seed] [test data(s)]
      * </pre>
-     * 
+     *
      * The format of test data(s):
      * <pre>
      *   [correct language name]\t[text body for test]\n
      * </pre>
-     *  
+     *
      */
     public void batchTest() {
         if (loadProfile()) return;
@@ -257,8 +259,8 @@ public class Command {
                     if (idx <= 0) continue;
                     String correctLang = line.substring(0, idx);
                     String text = line.substring(idx + 1);
-                    
-                    Detector detector = DetectorFactory.create(getDouble("alpha", DEFAULT_ALPHA));
+
+                    Detector detector = detectorFactory.create(getDouble("alpha", DEFAULT_ALPHA));
                     detector.append(text);
                     String lang = "";
                     try {
@@ -270,7 +272,7 @@ public class Command {
                     result.get(correctLang).add(lang);
                     if (hasOpt("--debug")) System.out.println(correctLang + "," + lang + "," + (text.length()>100?text.substring(0, 100):text));
                 }
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (LangDetectException e) {
@@ -304,9 +306,9 @@ public class Command {
                 totalCount += count;
             }
             System.out.println(String.format("total: %d/%d = %.3f", totalCorrect, totalCount, totalCorrect / (double)totalCount));
-            
+
         }
-        
+
     }
 
     /**

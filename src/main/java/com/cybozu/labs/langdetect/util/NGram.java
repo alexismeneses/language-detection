@@ -6,15 +6,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Cut out N-gram from text. 
+ * Cut out N-gram from text.
  * Users don't use this class directly.
  * @author Nakatani Shuyo
  */
 public class NGram {
     private static final String LATIN1_EXCLUDED = Messages.getString("NGram.LATIN1_EXCLUDE");
     public final static int N_GRAM = 3;
-    public static HashMap<Character, Character> cjk_map; 
-    
+    public static HashMap<Character, Character> cjk_map;
+
     private StringBuffer grams_;
     private boolean capitalword_;
 
@@ -56,7 +56,7 @@ public class NGram {
      */
     public String get(int n) {
         if (capitalword_) return null;
-        int len = grams_.length(); 
+        int len = grams_.length();
         if (n < 1 || n > 3 || len < n) return null;
         if (n == 1) {
             char ch = grams_.charAt(len - 1);
@@ -66,13 +66,13 @@ public class NGram {
             return grams_.substring(len - n, len);
         }
     }
-    
+
     /**
      * Character Normalization
      * @param ch
      * @return Normalized character
      */
-    static public char normalize(char ch) {
+    public static char normalize(char ch) {
         Character.UnicodeBlock block = Character.UnicodeBlock.of(ch);
         if (block == UnicodeBlock.BASIC_LATIN) {
             if (ch<'A' || (ch<'a' && ch >'Z') || ch>'z') ch = ' ';
@@ -132,7 +132,7 @@ public class NGram {
     private static final String DMARK_CLASS = Messages.getString("DMARK_CLASS");
     private static final Pattern ALPHABET_WITH_DMARK = Pattern.compile("([" + TO_NORMALIZE_VI_CHARS + "])(["
             + DMARK_CLASS + "])");
-    
+
     /**
      * CJK Kanji Normalization Mapping
      */
