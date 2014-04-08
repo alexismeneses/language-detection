@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.cybozu.labs</groupId>
+  <artifactId>langdetect</artifactId>
+  <packaging>jar</packaging>
+  <version>1.2-SNAPSHOT</version>
+  <name>language-detection</name>
+
+  <properties>
+    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.compiler.target>1.5</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.arnx</groupId>
+      <artifactId>jsonic</artifactId>
+      <version>1.3.3</version>
+    </dependency>
+  </dependencies>
+
+</project>
