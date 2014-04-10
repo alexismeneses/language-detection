@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
@@ -198,7 +199,7 @@ public class Detector {
     public List<LanguageProbability> getProbabilities() throws LangDetectException {
         if (langprob == null) detectBlock();
 
-        ArrayList<LanguageProbability> list = sortProbability(langprob);
+        List<LanguageProbability> list = sortProbability(langprob);
         return list;
     }
 
@@ -314,19 +315,15 @@ public class Detector {
      * @param probabilities HashMap
      * @return language candidates ordered by probabilities (higher first)
      */
-    private ArrayList<LanguageProbability> sortProbability(double[] prob) {
+    private List<LanguageProbability> sortProbability(double[] prob) {
         ArrayList<LanguageProbability> list = new ArrayList<LanguageProbability>();
         for(int j=0;j<prob.length;++j) {
             double p = prob[j];
             if (p > PROB_THRESHOLD) {
-                for (int i = 0; i <= list.size(); ++i) {
-                    if (i == list.size() || list.get(i).getProbability() < p) {
-                        list.add(i, new LanguageProbability(langlist.get(j), p));
-                        break;
-                    }
-                }
+                list.add(new LanguageProbability(langlist.get(j), p));
             }
         }
+        Collections.sort(list);
         return list;
     }
 
