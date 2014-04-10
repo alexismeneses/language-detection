@@ -15,14 +15,14 @@ public class NGram {
     public final static int N_GRAM = 3;
     public static HashMap<Character, Character> cjk_map;
 
-    private StringBuffer grams_;
+    private StringBuilder grams_;
     private boolean capitalword_;
 
     /**
      * Constructor.
      */
     public NGram() {
-        grams_ = new StringBuffer(" ");
+        grams_ = new StringBuilder(" ");
         capitalword_ = false;
     }
 
@@ -34,7 +34,7 @@ public class NGram {
         ch = normalize(ch);
         char lastchar = grams_.charAt(grams_.length() - 1);
         if (lastchar == ' ') {
-            grams_ = new StringBuffer(" ");
+            grams_ = new StringBuilder(" ");
             capitalword_ = false;
             if (ch==' ') return;
         } else if (grams_.length() >= N_GRAM) {

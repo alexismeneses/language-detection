@@ -47,7 +47,7 @@ public class Detector {
     private final HashMap<String, double[]> wordLangProbMap;
     private final ArrayList<String> langlist;
 
-    private StringBuffer text;
+    private StringBuilder text;
     private double[] langprob = null;
 
     private double alpha = ALPHA_DEFAULT;
@@ -65,7 +65,7 @@ public class Detector {
     public Detector(DetectorFactory factory) {
         this.wordLangProbMap = factory.wordLangProbMap;
         this.langlist = factory.langlist;
-        this.text = new StringBuffer();
+        this.text = new StringBuilder();
         this.seed  = factory.seed;
     }
 
@@ -168,7 +168,7 @@ public class Detector {
             }
         }
         if (latinCount * 2 < nonLatinCount) {
-            StringBuffer textWithoutLatin = new StringBuffer();
+            StringBuilder textWithoutLatin = new StringBuilder();
             for(int i = 0; i < text.length(); ++i) {
                 char c = text.charAt(i);
                 if (c > 'z' || c < 'A') textWithoutLatin.append(c);
