@@ -15,27 +15,29 @@ import com.cybozu.labs.langdetect.util.LangProfile;
 
 /**
  * Language Detector Factory Class
- *
+ * <p>
  * This class manages an initialization and constructions of {@link Detector}.
- *
- * Before using language detection library,
+ * <p>
+ * First create a factory with {@link #newInstance()} and
  * load profiles with {@link DetectorFactory#loadProfile(String)} method
  * and set initialization parameters.
- *
- * When the language detection,
- * construct Detector instance via {@link DetectorFactory#create()}.
- * See also {@link Detector}'s sample code.
- *
- * <ul>
- * <li>4x faster improvement based on Elmer Garduno's code. Thanks!</li>
- * </ul>
+ * <p>
+ * Then to detect language of a text fragment,
+ * construct a {@code Detector} instance via {@link DetectorFactory#create()}.
  *
  * @see Detector
+ *
  * @author Nakatani Shuyo
+ * @author Elmer Garduno
+ * @author Alexis Meneses
  */
 public class DetectorFactory {
 
 
+    /**
+     * Create a new instance of the factory
+     * @return a new factory instance
+     */
     public static DetectorFactory newInstance()
     {
         return new DetectorFactory();
@@ -99,7 +101,7 @@ public class DetectorFactory {
      * Load profiles from specified directory.
      * This method must be called once before language detection.
      *
-     * @param profileDirectory profile directory path
+     * @param json_profiles list of json encoded language profiles
      * @throws LangDetectException  Can't open profiles(error code = {@link ErrorCode#FileLoadError})
      *                              or profile's format is wrong (error code = {@link ErrorCode#FormatError})
      */

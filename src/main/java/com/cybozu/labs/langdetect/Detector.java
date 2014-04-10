@@ -6,6 +6,7 @@ import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -23,34 +24,10 @@ import com.cybozu.labs.langdetect.util.NGram;
  * The detector has some parameters for language detection.
  * See {@link #setAlpha(double)}, {@link #setMaxTextLength(int)} and {@link #setPriorMap(HashMap)}.
  *
- * <pre>
- * import java.util.ArrayList;
- * import com.cybozu.labs.langdetect.Detector;
- * import com.cybozu.labs.langdetect.DetectorFactory;
- * import com.cybozu.labs.langdetect.Language;
- *
- * class LangDetectSample {
- *     public void init(String profileDirectory) throws LangDetectException {
- *         DetectorFactory.loadProfile(profileDirectory);
- *     }
- *     public String detect(String text) throws LangDetectException {
- *         Detector detector = DetectorFactory.create();
- *         detector.append(text);
- *         return detector.detect();
- *     }
- *     public ArrayList<Language> detectLangs(String text) throws LangDetectException {
- *         Detector detector = DetectorFactory.create();
- *         detector.append(text);
- *         return detector.getProbabilities();
- *     }
- * }
- * </pre>
- *
- * <ul>
- * <li>4x faster improvement based on Elmer Garduno's code. Thanks!</li>
- * </ul>
- *
  * @author Nakatani Shuyo
+ * @author Elmer Garduno
+ * @author Alexis Meneses
+ *
  * @see DetectorFactory
  */
 public class Detector {
@@ -111,6 +88,7 @@ public class Detector {
      * Set prior information about language probabilities.
      * @param priorMap the priorMap to set
      * @throws LangDetectException
+     *   code = ErrorCode.InitParamError : In case one prior probability or their sum is negative
      */
     public void setPriorMap(HashMap<String, Double> priorMap) throws LangDetectException {
         this.priorMap = new double[langlist.size()];
@@ -206,21 +184,21 @@ public class Detector {
      *  code = ErrorCode.CantDetectError : Can't detect because of no valid features in text
      */
     public String detect() throws LangDetectException {
-        ArrayList<Language> probabilities = getProbabilities();
-        if (probabilities.size() > 0) return probabilities.get(0).lang;
+        List<LanguageProbability> probabilities = getProbabilities();
+        if (probabilities.size() > 0) return probabilities.get(0).getLanguage();
         return UNKNOWN_LANG;
     }
 
     /**
      * Get language candidates which have high probabilities
-     * @return possible languages list (whose probabilities are over PROB_THRESHOLD, ordered by probabilities descendently
+     * @return possible languages list (whose probabilities are over PROB_THRESHOLD, ordered by decreasing probabilities)
      * @throws LangDetectException
      *  code = ErrorCode.CantDetectError : Can't detect because of no valid features in text
      */
-    public ArrayList<Language> getProbabilities() throws LangDetectException {
+    public List<LanguageProbability> getProbabilities() throws LangDetectException {
         if (langprob == null) detectBlock();
 
-        ArrayList<Language> list = sortProbability(langprob);
+        ArrayList<LanguageProbability> list = sortProbability(langprob);
         return list;
     }
 
@@ -318,7 +296,7 @@ public class Detector {
     }
 
     /**
-     * normalize probabilities and check convergence by the maximun probability
+     * normalize probabilities and check convergence by the maximum probability
      * @return maximum of probabilities
      */
     private static double normalizeProb(double[] prob) {
@@ -334,16 +312,16 @@ public class Detector {
 
     /**
      * @param probabilities HashMap
-     * @return lanugage candidates order by probabilities descendently
+     * @return language candidates ordered by probabilities (higher first)
      */
-    private ArrayList<Language> sortProbability(double[] prob) {
-        ArrayList<Language> list = new ArrayList<Language>();
+    private ArrayList<LanguageProbability> sortProbability(double[] prob) {
+        ArrayList<LanguageProbability> list = new ArrayList<LanguageProbability>();
         for(int j=0;j<prob.length;++j) {
             double p = prob[j];
             if (p > PROB_THRESHOLD) {
                 for (int i = 0; i <= list.size(); ++i) {
-                    if (i == list.size() || list.get(i).prob < p) {
-                        list.add(i, new Language(langlist.get(j), p));
+                    if (i == list.size() || list.get(i).getProbability() < p) {
+                        list.add(i, new LanguageProbability(langlist.get(j), p));
                         break;
                     }
                 }

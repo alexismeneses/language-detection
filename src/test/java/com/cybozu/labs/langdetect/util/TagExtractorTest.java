@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.cybozu.labs.langdetect.util;
 
@@ -82,7 +82,7 @@ public class TagExtractorTest {
     }
 
     /**
-     * Test method for {@link com.cybozu.labs.langdetect.util.TagExtractor#closeTag(com.cybozu.labs.langdetect.util.LangProfile)}.
+     * Test method for {@link com.cybozu.labs.langdetect.util.TagExtractor#closeTag()}.
      */
     @Test
     public final void testCloseTag() {
@@ -90,7 +90,7 @@ public class TagExtractorTest {
         extractor.closeTag();    // ignore
     }
 
-    
+
     /**
      * Scenario Test of extracting &lt;abstract&gt; tag from Wikipedia database.
      */

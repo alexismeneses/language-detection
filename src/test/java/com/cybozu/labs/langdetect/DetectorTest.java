@@ -95,7 +95,7 @@ public class DetectorTest {
 
     @Test
     public final void testFactoryFromJsonString() throws LangDetectException {
-    	detectorFactory.clear();
+        detectorFactory.clear();
         ArrayList<String> profiles = new ArrayList<String>();
         profiles.add(JSON_LANG1);
         profiles.add(JSON_LANG2);
