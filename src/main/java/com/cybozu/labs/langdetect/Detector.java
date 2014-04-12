@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -88,22 +89,25 @@ public class Detector {
     /**
      * Set prior information about language probabilities.
      * @param priorMap the priorMap to set
-     * @throws LangDetectException
-     *   code = ErrorCode.InitParamError : In case one prior probability or their sum is negative
+     * @throws IllegalArgumentException In case one prior probability is negative or all are zero
      */
-    public void setPriorMap(HashMap<String, Double> priorMap) throws LangDetectException {
+    public void setPriorMap(Map<String, Double> priorMap) {
         this.priorMap = new double[langlist.size()];
         double sump = 0;
         for (int i=0;i<this.priorMap.length;++i) {
             String lang = langlist.get(i);
             if (priorMap.containsKey(lang)) {
                 double p = priorMap.get(lang);
-                if (p<0) throw new LangDetectException(ErrorCode.InitParamError, "Prior probability must be non-negative.");
+                if (p < 0) {
+                    throw new IllegalArgumentException("Prior probability must be non-negative.");
+                }
                 this.priorMap[i] = p;
                 sump += p;
             }
         }
-        if (sump<=0) throw new LangDetectException(ErrorCode.InitParamError, "More one of prior probability must be non-zero.");
+        if (sump <= 0) {
+            throw new IllegalArgumentException("More one of prior probability must be non-zero.");
+        }
         for (int i=0;i<this.priorMap.length;++i) this.priorMap[i] /= sump;
     }
 
@@ -181,10 +185,9 @@ public class Detector {
     /**
      * Detect language of the target text and return the language name which has the highest probability.
      * @return detected language name which has most probability.
-     * @throws LangDetectException
-     *  code = ErrorCode.CantDetectError : Can't detect because of no valid features in text
+     * @throws NoFeatureInTextException Can't detect because of no valid features in text
      */
-    public String detect() throws LangDetectException {
+    public String detect() {
         List<LanguageProbability> probabilities = getProbabilities();
         if (probabilities.size() > 0) return probabilities.get(0).getLanguage();
         return UNKNOWN_LANG;
@@ -193,10 +196,9 @@ public class Detector {
     /**
      * Get language candidates which have high probabilities
      * @return possible languages list (whose probabilities are over PROB_THRESHOLD, ordered by decreasing probabilities)
-     * @throws LangDetectException
-     *  code = ErrorCode.CantDetectError : Can't detect because of no valid features in text
+     * @throws NoFeatureInTextException Can't detect because of no valid features in text
      */
-    public List<LanguageProbability> getProbabilities() throws LangDetectException {
+    public List<LanguageProbability> getProbabilities() {
         if (langprob == null) detectBlock();
 
         List<LanguageProbability> list = sortProbability(langprob);
@@ -204,14 +206,15 @@ public class Detector {
     }
 
     /**
-     * @throws LangDetectException
+     * @throws NoFeatureInTextException Can't detect because of no valid features in text
      *
      */
-    private void detectBlock() throws LangDetectException {
+    private void detectBlock() {
         cleaningText();
         ArrayList<String> ngrams = extractNGrams();
-        if (ngrams.size()==0)
-            throw new LangDetectException(ErrorCode.CantDetectError, "no features in text");
+        if (ngrams.size()==0) {
+            throw new NoFeatureInTextException("No feature in text");
+        }
 
         langprob = new double[langlist.size()];
 

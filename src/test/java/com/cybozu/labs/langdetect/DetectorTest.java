@@ -2,6 +2,7 @@ package com.cybozu.labs.langdetect;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,35 +52,35 @@ public class DetectorTest {
     }
 
     @Test
-    public final void testDetector1() throws LangDetectException {
+    public final void testDetector1() {
         Detector detect = detectorFactory.create();
         detect.append("a");
         assertEquals(detect.detect(), "en");
     }
 
     @Test
-    public final void testDetector2() throws LangDetectException {
+    public final void testDetector2() {
         Detector detect = detectorFactory.create();
         detect.append("b d");
         assertEquals(detect.detect(), "fr");
     }
 
     @Test
-    public final void testDetector3() throws LangDetectException {
+    public final void testDetector3() {
         Detector detect = detectorFactory.create();
         detect.append("d e");
         assertEquals(detect.detect(), "en");
     }
 
     @Test
-    public final void testDetector4() throws LangDetectException {
+    public final void testDetector4() {
         Detector detect = detectorFactory.create();
         detect.append("\u3042\u3042\u3042\u3042a");
         assertEquals(detect.detect(), "ja");
     }
 
     @Test
-    public final void testLangList() throws LangDetectException {
+    public final void testLangList() {
         List<String> langList = detectorFactory.getLangList();
         assertEquals(langList.size(), 3);
         assertEquals(langList.get(0), "en");
@@ -88,13 +89,13 @@ public class DetectorTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public final void testLangListException() throws LangDetectException {
+    public final void testLangListException() {
         List<String> langList = detectorFactory.getLangList();
         langList.add("hoge");
     }
 
     @Test
-    public final void testFactoryFromJsonString() throws LangDetectException {
+    public final void testFactoryFromJsonString() throws IOException {
         detectorFactory.clear();
         ArrayList<String> profiles = new ArrayList<String>();
         profiles.add(JSON_LANG1);

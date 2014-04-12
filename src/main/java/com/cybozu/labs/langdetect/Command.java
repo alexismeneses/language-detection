@@ -20,10 +20,11 @@ import net.arnx.jsonic.JSONException;
  *
  * LangDetect Command Line Interface
  * <p>
- * This is a command line interface of Language Detection Library "LandDetect".
+ * This is a command line interface of Language Detection Library "LangDetect".
  *
  *
  * @author Nakatani Shuyo
+ * @author Alexis Meneses
  *
  */
 public class Command {
@@ -110,7 +111,7 @@ public class Command {
             Long seed = getLong("seed");
             if (seed != null) detectorFactory.setSeed(seed);
             return false;
-        } catch (LangDetectException e) {
+        } catch (IOException e) {
             System.err.println("ERROR: " + e.getMessage());
             return true;
         }
@@ -144,8 +145,6 @@ public class Command {
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (LangDetectException e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -192,8 +191,6 @@ public class Command {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (LangDetectException e) {
-            e.printStackTrace();
         } finally {
             try {
                 if (os!=null) os.close();
@@ -221,8 +218,6 @@ public class Command {
                 detector.append(is);
                 System.out.println(filename + ":" + detector.getProbabilities());
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (LangDetectException e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -275,8 +270,6 @@ public class Command {
 
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (LangDetectException e) {
-                e.printStackTrace();
             } finally {
                 try {
                     if (is!=null) is.close();
@@ -306,9 +299,7 @@ public class Command {
                 totalCount += count;
             }
             System.out.println(String.format("total: %d/%d = %.3f", totalCorrect, totalCount, totalCorrect / (double)totalCount));
-
         }
-
     }
 
     /**

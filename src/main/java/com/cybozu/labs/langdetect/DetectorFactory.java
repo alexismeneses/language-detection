@@ -56,10 +56,9 @@ public class DetectorFactory {
      * This method must be called once before language detection.
      *
      * @param profileDirectory profile directory path
-     * @throws LangDetectException  Can't open profiles(error code = {@link ErrorCode#FileLoadError})
-     *                              or profile's format is wrong (error code = {@link ErrorCode#FormatError})
+     * @throws IOException  Can't open profiles or profile format is wrong
      */
-    public void loadProfile(String profileDirectory) throws LangDetectException {
+    public void loadProfile(String profileDirectory) throws IOException {
         loadProfile(new File(profileDirectory));
     }
 
@@ -68,13 +67,13 @@ public class DetectorFactory {
      * This method must be called once before language detection.
      *
      * @param profileDirectory profile directory path
-     * @throws LangDetectException  Can't open profiles(error code = {@link ErrorCode#FileLoadError})
-     *                              or profile's format is wrong (error code = {@link ErrorCode#FormatError})
+     * @throws IOException  Can't open profiles or profile's format is wrong
      */
-    public void loadProfile(File profileDirectory) throws LangDetectException {
+    public void loadProfile(File profileDirectory) throws IOException {
         File[] listFiles = profileDirectory.listFiles();
-        if (listFiles == null)
-            throw new LangDetectException(ErrorCode.NeedLoadProfileError, "Not found profile: " + profileDirectory);
+        if (listFiles == null) {
+            throw new IOException("Couldn't open directory or directory is empty: " + profileDirectory);
+        }
 
         int langsize = listFiles.length, index = 0;
         for (File file: listFiles) {
@@ -86,9 +85,7 @@ public class DetectorFactory {
                 addProfile(profile, index, langsize);
                 ++index;
             } catch (JSONException e) {
-                throw new LangDetectException(ErrorCode.FormatError, "profile format error in '" + file.getName() + "'");
-            } catch (IOException e) {
-                throw new LangDetectException(ErrorCode.FileLoadError, "can't open '" + file.getName() + "'");
+                throw new IOException("Profile format error in '" + file.getName() + "'", e);
             } finally {
                 try {
                     if (is!=null) is.close();
@@ -102,14 +99,14 @@ public class DetectorFactory {
      * This method must be called once before language detection.
      *
      * @param json_profiles list of json encoded language profiles
-     * @throws LangDetectException  Can't open profiles(error code = {@link ErrorCode#FileLoadError})
-     *                              or profile's format is wrong (error code = {@link ErrorCode#FormatError})
+     * @throws IllegalArgumentException  Can't open profiles or profile format is wrong
      */
-    public void loadProfile(List<String> json_profiles) throws LangDetectException {
+    public void loadProfile(List<String> json_profiles) throws IOException {
         int index = 0;
         int langsize = json_profiles.size();
-        if (langsize < 2)
-            throw new LangDetectException(ErrorCode.NeedLoadProfileError, "Need more than 2 profiles");
+        if (langsize < 2) {
+            throw new IllegalArgumentException("Need more than 2 profiles");
+        }
 
         for (String json: json_profiles) {
             try {
@@ -117,21 +114,21 @@ public class DetectorFactory {
                 addProfile(profile, index, langsize);
                 ++index;
             } catch (JSONException e) {
-                throw new LangDetectException(ErrorCode.FormatError, "profile format error");
+                throw new IllegalArgumentException("Profile format error");
             }
         }
     }
 
     /**
-     * @param profile
-     * @param langsize
-     * @param index
-     * @throws LangDetectException
+     * @param profile internal profile structure
+     * @param index Index of the added profile
+     * @param langsize Total number of profiles
+     * @throws IllegalArgumentException If the added profile already exists
      */
-    void addProfile(LangProfile profile, int index, int langsize) throws LangDetectException {
+    void addProfile(LangProfile profile, int index, int langsize) {
         String lang = profile.name;
         if (this.langlist.contains(lang)) {
-            throw new LangDetectException(ErrorCode.DuplicateLangError, "duplicate the same language profile");
+            throw new IllegalArgumentException("Duplicate language profile for [" + lang + "]");
         }
         this.langlist.add(lang);
         for (String word: profile.freq.keySet()) {
@@ -158,9 +155,8 @@ public class DetectorFactory {
      * Construct Detector instance
      *
      * @return Detector instance
-     * @throws LangDetectException
      */
-    public Detector create() throws LangDetectException {
+    public Detector create() {
         return createDetector();
     }
 
@@ -169,17 +165,17 @@ public class DetectorFactory {
      *
      * @param alpha smoothing parameter (default value = 0.5)
      * @return Detector instance
-     * @throws LangDetectException
      */
-    public Detector create(double alpha) throws LangDetectException {
+    public Detector create(double alpha) {
         Detector detector = createDetector();
         detector.setAlpha(alpha);
         return detector;
     }
 
-    private Detector createDetector() throws LangDetectException {
-        if (this.langlist.size()==0)
-            throw new LangDetectException(ErrorCode.NeedLoadProfileError, "need to load profiles");
+    private Detector createDetector() {
+        if (this.langlist.size()==0) {
+            throw new IllegalStateException("Profiles need to be loaded first");
+        }
         Detector detector = new Detector(this);
         return detector;
     }

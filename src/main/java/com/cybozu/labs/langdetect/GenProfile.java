@@ -18,9 +18,10 @@ import com.cybozu.labs.langdetect.util.TagExtractor;
 /**
  * Load Wikipedia's abstract XML as corpus and
  * generate its language profile in JSON format.
- * 
+ *
  * @author Nakatani Shuyo
- * 
+ * @author Alexis Meneses
+ *
  */
 public class GenProfile {
 
@@ -29,9 +30,9 @@ public class GenProfile {
      * @param lang target language name
      * @param file target database file path
      * @return Language profile instance
-     * @throws LangDetectException 
+     * @throws IOException In case the file cannot be read or is not a valid XML file
      */
-    public static LangProfile loadFromWikipediaAbstract(String lang, File file) throws LangDetectException {
+    public static LangProfile loadFromWikipediaAbstract(String lang, File file) throws IOException {
 
         LangProfile profile = new LangProfile(lang);
 
@@ -62,7 +63,7 @@ public class GenProfile {
                     }
                 }
             } catch (XMLStreamException e) {
-                throw new LangDetectException(ErrorCode.TrainDataFormatError, "Training database file '" + file.getName() + "' is an invalid XML.");
+                throw new IOException("Training database file '" + file.getName() + "' is an invalid XML.");
             } finally {
                 try {
                     if (reader != null) reader.close();
@@ -71,7 +72,7 @@ public class GenProfile {
             System.out.println(lang + ":" + tagextractor.count());
 
         } catch (IOException e) {
-            throw new LangDetectException(ErrorCode.CantOpenTrainData, "Can't open training database file '" + file.getName() + "'");
+            throw new IOException("Can't open or read training database file '" + file.getName() + "' " + e.getMessage(), e);
         } finally {
             try {
                 if (br != null) br.close();
@@ -86,9 +87,9 @@ public class GenProfile {
      * @param lang target language name
      * @param file target file path
      * @return Language profile instance
-     * @throws LangDetectException 
+     * @throws IOException in case in I/O error happen
      */
-    public static LangProfile loadFromText(String lang, File file) throws LangDetectException {
+    public static LangProfile loadFromText(String lang, File file) throws IOException {
 
         LangProfile profile = new LangProfile(lang);
 
@@ -106,7 +107,7 @@ public class GenProfile {
             System.out.println(lang + ":" + count);
 
         } catch (IOException e) {
-            throw new LangDetectException(ErrorCode.CantOpenTrainData, "Can't open training database file '" + file.getName() + "'");
+            throw new IOException("Can't open training database file '" + file.getName() + "' " + e.getMessage(), e);
         } finally {
             try {
                 if (is != null) is.close();
