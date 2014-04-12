@@ -303,6 +303,33 @@ public class Command {
     }
 
     /**
+     * Issue help message showing all options
+     */
+    public void help()
+    {
+        System.out.println();
+        System.out.println();
+        System.out.println("Language detection library");
+        System.out.println("==========================");
+        System.out.println();
+        System.out.println("Usage:");
+        System.out.println();
+        System.out.println("Detect language of files:");
+        System.out.println("  --detectlang [-d <profile_directory>] [-a <alpha>] [-s <seed>] <test_file(s)>");
+        System.out.println();
+        System.out.println("Generate a profile from raw text:");
+        System.out.println("  --genprofile-text -l <language code> <text_file_path>");
+        System.out.println();
+        System.out.println("Generate some profiles from wikipedia abstract XMLs:");
+        System.out.println("  --genprofile -d <abstracts_directory> <2 letter language code(s)>");
+        System.out.println();
+        System.out.println("Run a batch test and output precision:");
+        System.out.println(" --batchtest [-d <profile_directory>] [-a <alpha>] [-s <seed>] <test_data_file(s)>");
+        System.out.println();
+        System.out.println();
+    }
+
+    /**
      * Command Line Interface
      * @param args command line arguments
      */
@@ -322,6 +349,8 @@ public class Command {
             command.detectLang();
         } else if (command.hasOpt("--batchtest")) {
             command.batchTest();
+        } else {
+            command.help();
         }
     }
 
