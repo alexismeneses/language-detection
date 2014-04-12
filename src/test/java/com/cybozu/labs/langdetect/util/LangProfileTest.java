@@ -1,14 +1,10 @@
 /**
- * 
+ *
  */
 package com.cybozu.labs.langdetect.util;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -16,34 +12,6 @@ import org.junit.Test;
  *
  */
 public class LangProfileTest {
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
 
     /**
      * Test method for {@link com.cybozu.labs.langdetect.util.LangProfile#LangProfile()}.
@@ -76,13 +44,13 @@ public class LangProfileTest {
         profile.omitLessFreq();
     }
 
-    
+
     /**
      * Illegal call test for {@link LangProfile#add(String)}
      */
     @Test
     public final void testAddIllegally1() {
-        LangProfile profile = new LangProfile(); // Illegal ( available for only JSONIC ) but ignore  
+        LangProfile profile = new LangProfile(); // Illegal ( available for only JSONIC ) but ignore
         profile.add("a"); // ignore
         assertEquals(profile.freq.get("a"), null); // ignored
     }
@@ -99,9 +67,9 @@ public class LangProfileTest {
         assertEquals((int)profile.freq.get("a"), 1);
         assertEquals(profile.freq.get(""), null);     // ignored
         assertEquals(profile.freq.get("abcd"), null); // ignored
-        
+
     }
-    
+
     /**
      * Test method for {@link com.cybozu.labs.langdetect.util.LangProfile#omitLessFreq()}.
      */

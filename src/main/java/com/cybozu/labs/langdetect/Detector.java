@@ -24,7 +24,7 @@ import com.cybozu.labs.langdetect.util.NGram;
  * {@link #getProbabilities()} methods returns a list of multiple languages and their probabilities.
  * <p>
  * The detector has some parameters for language detection.
- * See {@link #setAlpha(double)}, {@link #setMaxTextLength(int)} and {@link #setPriorMap(HashMap)}.
+ * See {@link #setAlpha(double)}, {@link #setMaxTextLength(int)} and {@link #setPriorMap(Map)}.
  *
  * @author Nakatani Shuyo
  * @author Elmer Garduno

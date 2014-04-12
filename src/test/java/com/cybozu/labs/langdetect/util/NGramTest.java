@@ -1,13 +1,11 @@
 /**
- * 
+ *
  */
 package com.cybozu.labs.langdetect.util;
 
 import static org.junit.Assert.*;
 
 import static org.hamcrest.CoreMatchers.is;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -15,20 +13,6 @@ import org.junit.Test;
  *
  */
 public class NGramTest {
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
 
     /**
      * Test method for constants
@@ -160,7 +144,7 @@ public class NGramTest {
         assertEquals(ngram.get(3), null);
 
     }
- 
+
     /**
      * Test method for {@link NGram#get(int)} and {@link NGram#addChar(char)}
      */
@@ -177,14 +161,14 @@ public class NGramTest {
         assertEquals(ngram.get(1), null);
         assertEquals(ngram.get(2), "A ");
         assertEquals(ngram.get(3), " A ");
-        
+
         ngram.addChar('B');
         assertEquals(ngram.get(1), "B");
         assertEquals(ngram.get(2), " B");
         assertEquals(ngram.get(3), null);
-       
+
     }
- 
+
     /**
      * Test method for {@link NGram#get(int)} and {@link NGram#addChar(char)}
      */

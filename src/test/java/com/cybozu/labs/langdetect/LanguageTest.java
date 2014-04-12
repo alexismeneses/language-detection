@@ -5,8 +5,6 @@ package com.cybozu.labs.langdetect;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -16,21 +14,7 @@ import org.junit.Test;
 public class LanguageTest {
 
     /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
-
-    /**
-     * Test method for {@link com.cybozu.labs.langdetect.LanguageProbability#Language(java.lang.String, double)}.
+     * Test method for {@link com.cybozu.labs.langdetect.LanguageProbability#LanguageProbability(String, double)}.
      */
     @Test
     public final void testLanguage() {
