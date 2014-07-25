@@ -27,4 +27,33 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <configuration>
+              <target>
+                <property name="profiles.name" value="profiles"/>
+                <property name="profiles.package" value="com/cybozu/labs/langdetect/${profiles.name}"/>
+                <property name="profiles.dir" value="${basedir}/src/main/resources/${profiles.package}/"/>
+                <fileset id="profiles.fs" dir="${profiles.dir}"/>
+                <pathconvert pathsep="," property="profiles.list" refid="profiles.fs">
+                  <map from="${profiles.dir}" to=""/>
+                </pathconvert>
+                <echo file="${project.build.outputDirectory}/${profiles.package}/profiles.lst">${profiles.list}</echo>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

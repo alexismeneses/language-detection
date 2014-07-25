@@ -107,7 +107,7 @@ public class Command {
     private boolean loadProfile() {
         String profileDirectory = get("directory") + "/";
         try {
-            detectorFactory.loadProfile(profileDirectory);
+            detectorFactory.loadProfiles(profileDirectory);
             Long seed = getLong("seed");
             if (seed != null) detectorFactory.setSeed(seed);
             return false;

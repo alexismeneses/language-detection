@@ -15,6 +15,7 @@ import com.cybozu.labs.langdetect.util.LangProfile;
 /**
  * Unit test for {@link Detector} and {@link DetectorFactory}.
  * @author Nakatani Shuyo
+ * @author Alexis Meneses
  *
  */
 public class DetectorTest {
@@ -34,17 +35,17 @@ public class DetectorTest {
         LangProfile profile_en = new LangProfile("en");
         for (String w : TRAINING_EN.split(" "))
             profile_en.add(w);
-        detectorFactory.addProfile(profile_en, 0, 3);
+        detectorFactory.addProfile(profile_en);
 
         LangProfile profile_fr = new LangProfile("fr");
         for (String w : TRAINING_FR.split(" "))
             profile_fr.add(w);
-        detectorFactory.addProfile(profile_fr, 1, 3);
+        detectorFactory.addProfile(profile_fr);
 
         LangProfile profile_ja = new LangProfile("ja");
         for (String w : TRAINING_JA.split(" "))
             profile_ja.add(w);
-        detectorFactory.addProfile(profile_ja, 2, 3);
+        detectorFactory.addProfile(profile_ja);
     }
 
     @After
@@ -100,7 +101,7 @@ public class DetectorTest {
         ArrayList<String> profiles = new ArrayList<String>();
         profiles.add(JSON_LANG1);
         profiles.add(JSON_LANG2);
-        detectorFactory.loadProfile(profiles);
+        detectorFactory.loadProfiles(profiles);
         List<String> langList = detectorFactory.getLangList();
         assertEquals(langList.size(), 2);
         assertEquals(langList.get(0), "lang1");
